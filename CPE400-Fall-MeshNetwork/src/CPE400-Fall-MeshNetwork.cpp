@@ -2,11 +2,17 @@
 //
 
 #include "CPE400-Fall-MeshNetwork.h"
+#include "graph.h"
+#include <cstdlib>
+#include <time.h>
 
 using namespace std;
 
 int main()
 {
-	cout << "Hello CMake." << endl;
+	srand(time(NULL));
+	Graph* test = new Graph();
+
+	test->outputDelays();
 	return 0;
 }
