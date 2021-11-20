@@ -1,0 +1,9 @@
+class GraphNode {
+
+public:
+
+
+private:
+
+
+};
