@@ -5,6 +5,7 @@
 #include "graph.h"
 #include <cstdlib>
 #include <time.h>
+#include <vector>
 
 using namespace std;
 
@@ -14,5 +15,10 @@ int main()
 	Graph* test = new Graph();
 
 	test->outputDelays();
+
+	unvisitedNodes
+
+
+
 	return 0;
 }

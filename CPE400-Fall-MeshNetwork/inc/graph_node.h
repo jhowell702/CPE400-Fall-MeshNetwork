@@ -11,7 +11,14 @@ public:
 private:
 	float procDelay;
 	float transDelay;
-	float qDelay;
+	float qSize;
+
+	// a* data values for the node
+	float shortDis;
+	float heur;
+	float totalDis;
+
+	GraphNode* prevNode;
 
 	std::vector<GraphConnection> connections;
 };
