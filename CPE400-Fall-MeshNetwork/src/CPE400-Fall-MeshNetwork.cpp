@@ -40,8 +40,10 @@ void astar(Graph* graph) {
 			if (unvisitedNodes[currConns[i]->getEnd()->getID()] != NULL) { //if the end node is not visited
 
 				int connNodeID = currConns[i]->getEnd()->getID(); //the end node of the current connection
+
 				float delay = currConns[i]->getDelay();			  //get the propagation delay of current connection
-				float testTotal = delay + currConns[i]->getEnd()->getHeur();
+
+				float testTotal = currNode->getShort() + delay + currConns[i]->getEnd()->getHeur();
 
 				//set shortest distance from start to be connection delay + currNode's shortest distance from starting node
 				unvisitedNodes[connNodeID]->setShort(delay + currNode->getShort());
