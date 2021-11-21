@@ -3,11 +3,14 @@ class GraphNode;
 class GraphConnection {
 
 public:
-	GraphConnection();
+	GraphConnection(GraphNode*, GraphNode*, float);
+
+	GraphNode* getEnd() { return end_node; };
+	float getDelay() { return propDelay; };
 
 private:
-	GraphNode* left_node;
-	GraphNode* right_node;
-	float transDelay;
+	GraphNode* start_node;
+	GraphNode* end_node;
+	float propDelay;
 
 };

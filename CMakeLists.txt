@@ -7,3 +7,4 @@ project ("CPE400-Fall-MeshNetwork")
 
 # Include sub-projects.
 add_subdirectory ("CPE400-Fall-MeshNetwork")
+set (CMAKE_CXX_STANDARD 11)
