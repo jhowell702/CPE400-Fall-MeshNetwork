@@ -16,11 +16,9 @@ using namespace std;
 void astar(Graph* graph) {
 
 	map<int, GraphNode*> unvisitedNodes;
-	map<int, GraphNode*> visitedNodes;
 	for (int i = 0; i < graph->getNumNodes(); i++) {
 
 		unvisitedNodes.insert(pair<int, GraphNode*>(i,graph->getNodes()[i]));
-		visitedNodes.insert(pair<int, GraphNode*>(i, NULL));
 
 	}
 
