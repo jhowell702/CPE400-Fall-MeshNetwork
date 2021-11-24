@@ -1,5 +1,6 @@
-#include "graph_node.h"
 #include <vector>
+
+class GraphNode;
 
 class Graph {
 

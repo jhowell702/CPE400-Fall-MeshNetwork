@@ -2,8 +2,6 @@
 
 class GraphConnection;
 
-
-
 class GraphNode {
 
 public:
@@ -28,6 +26,8 @@ public:
 	void createConnection(GraphNode*, float);
 
 	std::vector<GraphConnection*> getConnections() { return connections; };
+
+	GraphConnection* findConnection(int num);
 
 private:
 

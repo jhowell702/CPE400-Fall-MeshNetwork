@@ -4,6 +4,9 @@
 #include "CPE400-Fall-MeshNetwork.h"
 #include "graph.h"
 #include "graph_connection.h"
+#include "graph_node.h"
+#include "command_utilities.h"
+
 #include <cstdlib>
 #include <time.h>
 #include <vector>
@@ -82,8 +85,22 @@ int main()
 	srand(time(NULL));
 	Graph* test = new Graph();
 
-	astar(test);
+	map<int, GraphNode*>* unvisitedNodes = new map<int, GraphNode*>();
+	map<int, GraphNode*>* visitedNodes = new map<int, GraphNode*>();
 
+	for (int i = 0; i < test->getNumNodes(); i++) {
+
+		unvisitedNodes->insert(pair<int, GraphNode*>(i, test->getNodes()[i]));
+
+	}
+
+
+
+	UI* ui = new UI(unvisitedNodes, visitedNodes);
+
+	ui->aStar_Fast();
+
+	ui->outputGraph(test);
 
 
 	return 0;

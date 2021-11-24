@@ -1,9 +1,9 @@
 #include <graph.h>
-
+#include "graph_node.h"
 
 Graph::Graph() {
 	
-	numNodes = 7;
+	numNodes = 12;
 
 	for (int x = 0; x < numNodes; x++) {
 
@@ -19,7 +19,7 @@ Graph::Graph() {
 
 void Graph::defaultInit() {
 
-	enum nodesNames { a, b, c, d, e, f, z };
+	enum nodesNames { a, b, c, d, e, f, g, h, i, j, k, z };
 
 	nodes[a]->setHeur(14);
 	nodes[a]->createConnection(nodes[b], 4);
