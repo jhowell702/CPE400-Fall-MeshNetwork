@@ -8,96 +8,158 @@ using namespace std;
 
 enum nodesNames { a, b, c, d, e, f, g, h, i, j, k, z };
 
-UI::UI(map<int, GraphNode*> * in, map<int, GraphNode*>* in2) {
+UI::UI(map<int, GraphNode*> * in, map<int, GraphNode*>* in2, Graph* in3) {
 
 	visitedNodes = in2;
 	unvisitedNodes = in;
+	graph = in3;
 
 }
 
-void UI::outputGraph(Graph* graph) {
-;
+void UI::outputGraph() {
+	cout << endl << endl << endl;
+	cout << "------------------------------------------------------------------------------" << endl;
+	cout << "Current Graph" << endl;
+	cout << "------------------------------------------------------------------------------" << endl;
 	
-	cout << "                  /--"; outputConnection(graph, a, c); cout << "--";	outputNode(graph, b);
-	cout << "---"; outputConnection(graph, a, c); cout << "---";	outputNode(graph, e);
-	cout << "---"; outputConnection(graph, a, c); cout << "---";	outputNode(graph, i);
-	cout << "---"; outputConnection(graph, a, c); cout << "---\\";
+	cout << "                  /--"; outputConnection(a, b); cout << "--";	outputNode(b);
+	cout << "---"; outputConnection(b, e); cout << "---";	outputNode(e);
+	cout << "---"; outputConnection(e, i); cout << "---";	outputNode(i);
+	cout << "---"; outputConnection(i, z); cout << "---\\";
 
 	// diagnol connectors
 
 	cout << endl;	cout << "                 /             \\                /             \\";
 
 	cout << endl;
-	cout << "                "; outputConnection(graph, a, b);
-	cout << "               "; outputConnection(graph, a, b);
-	cout << "              "; outputConnection(graph, a, c);
-	cout << "               "; outputConnection(graph, a, c);
+	cout << "                /";
+	cout << "               "; outputConnection(b, f);
+	cout << "              "; outputConnection(g, i);
+	cout << "               \\";
 
 	cout << endl;	cout << "               /                 \\            /                 \\";
 
 	/// Middle nodes
 
-	cout << endl;	cout << "Start Node:";	outputNode(graph, a);
-	cout << "--"; outputConnection(graph, a, c); cout << "--";	outputNode(graph, c);
-	cout << "--"; outputConnection(graph, a, c); cout << "--";	outputNode(graph, f);
-	cout << "--"; outputConnection(graph, a, c); cout << "--";	outputNode(graph, g);
-	cout << "--"; outputConnection(graph, a, c); cout << "--";	outputNode(graph, j);
-	cout << "--"; outputConnection(graph, a, c); cout << "--";	outputNode(graph, z);
+	cout << endl;	cout << "Start Node:";	outputNode(a);
+	cout << "--"; outputConnection(a, c); cout << "--";	outputNode(c);
+	cout << "--"; outputConnection(c, f); cout << "--";	outputNode(f);
+	cout << "--"; outputConnection(f, g); cout << "--";	outputNode(g);
+	cout << "--"; outputConnection(g, j); cout << "--";	outputNode(j);
+	cout << "--"; outputConnection(j, z); cout << "--";	outputNode(z);
 
 	// second set of diagnol connectors
 
 	cout << endl;	cout << "               \\                 /            \\                /";
 	cout << endl;
-	cout << "                ";outputConnection(graph, a, b);
-	cout << "               "; outputConnection(graph, a, b);
-	cout << "              "; outputConnection(graph, a, b);
-	cout << "              "; outputConnection(graph, a, b);
+	cout << "                \\";
+	cout << "               "; outputConnection(d, f);
+	cout << "              "; outputConnection(g, k);
+	cout << "              /";
 	cout << endl;	cout << "                 \\             /                \\            /";
 
 	cout << endl;
-	cout << "                  \\--"; outputConnection(graph, a, c); cout << "--";	outputNode(graph, b);
-	cout << "--"; outputConnection(graph, a, c); cout << "--";	outputNode(graph, e);
-	cout << "--"; outputConnection(graph, a, c); cout << "--";	outputNode(graph, i);
-	cout << "----"; outputConnection(graph, a, c); cout << "-----/";
+	cout << "                  \\--"; outputConnection(a, d); cout << "--";	outputNode(d);
+	cout << "--"; outputConnection(d, h); cout << "--";						outputNode(h);
+	cout << "--"; outputConnection(h, k); cout << "--";						outputNode(k);
+	cout << "----"; outputConnection(k, z); cout << "-----/";
+	cout << endl;
 
 }
 
-void UI::outputNode(Graph* graph, int num) {
-	cout << "\033[30;47m";
-	cout << "|" << (char)(65 + graph->getNodes()[num]->getID()) << ":" << graph->getNodes()[num]->getHeur() << "|";
-	cout << "\033[0m";
+void UI::outputNode(int num) {
+	if (currNode->getID() == num) {
+		cout << "\033[30;47m";
+	}
+		cout << "|" << (char)(65 + graph->getNodes()[num]->getID()) << ":" << graph->getNodes()[num]->getHeur() << "|";
+		cout << "\033[0m";
+
 }
 
-void UI::outputConnection(Graph* graph, int node, int num) {
+void UI::outputConnection(int node, int num) {
 	cout << graph->getNodes()[node]->findConnection(num)->getDelay();
 }
 
-void UI::outputNodes() {
+void UI::outputFinal(GraphNode* prev) {
+
+	if (prev->getID() == z) {
+		outputFinal(prev->getPrev());
+		cout << (char)(prev->getID() + 65);
+
+	}else if (prev->getID() != a) {
+		outputFinal(prev->getPrev());
+		cout << (char)(prev->getID() + 65) << "->";
+	}
+	else  {
+		cout << (char)(prev->getID() + 65) << "->";
+		return;
+	}
+}
+
+void UI::outputNodeData() {
 
 	map<int, GraphNode*>::iterator it;
-	if ((*visitedNodes).size() != 0) {
-		for (it = (*visitedNodes).begin(); it != (*visitedNodes).end(); it++) {
-			cout << "|Node: " << it->second->getID() << "|" << it->second->getHeur() << endl;
+
+	cout << "------------------------------------------------------------------------------" << endl;
+	cout << "Heuristic Node Data" << endl;
+	cout << "------------------------------------------------------------------------------" << endl;
+	cout << "Unvisited Nodes" << endl;
+	cout << "------------------------------------------------------------------------------" << endl;
+	if ((*unvisitedNodes).size() != 0) {
+		for (it = (*unvisitedNodes).begin(); it != (*unvisitedNodes).end(); it++) {
+			if (it->second != NULL) {
+				cout << "| Node: " << (char)(it->second->getID() + 65) << " | Shortest Distance From A: " << it->second->getShort() << " | Heuristic: ";
+				cout << it->second->getHeur() << " | Total Distance: " << it->second->getTotal() << endl;
+			}
 		}
 	}
-	cout << "-------------------" << endl;
+	cout << "------------------------------------------------------------------------------" << endl;
+	cout << "Visited Nodes" << endl;
+	cout << "------------------------------------------------------------------------------" << endl;
+
+	if ((*visitedNodes).size() != 0) {
+		for (it = (*visitedNodes).begin(); it != (*visitedNodes).end(); it++) {
+			if (currNode->getID() == it->second->getID()) {
+				cout << "\033[30;47m";
+			}
+			cout << "| Node: " << (char)(it->second->getID() + 65) << " |\033[0m Shortest Distance From A: " << it->second->getShort() << " | Heuristic: " << it->second->getHeur();
+			cout << " | Total Distance: " << it->second->getTotal()  << endl;
+		}
+	}
+
+	cout << "------------------------------------------------------------------------------" << endl;
+
 }
 
 void UI::aStar_Slow() {
-
-}
-
-void UI::aStar_Fast() {
-	// set short and total for starting node
-
 	currNode = (*unvisitedNodes)[a];
 	currNode->setShort(0);
 	currNode->setTotal(currNode->getHeur());
+	currNode->setCurrent(true);
 
-	while (currNode->getID() != z) { //while the currNode is not the final node
+	int slowState = 1;
 
-		outputNodes();
 
+	while (slowState != 0) {
+
+
+		cout << "Input and enter: 1 to continue, 0 to end" << endl << "Input: ";
+		cin >> slowState;
+
+		if (currNode->getID() == z) {
+			slowState = 0;
+		}
+
+		outputGraph();
+
+		cout << "Input and enter: 1 to continue, 0 to end" << endl << "Input: ";
+		cin >> slowState;
+
+		if (currNode->getID() == z) {
+			slowState = 0;
+		}
+
+		if (slowState == 1) {
 		std::vector<GraphConnection*> currConns = currNode->getConnections();
 
 		//update shortest distance from a, and total distance for all connections
@@ -139,6 +201,75 @@ void UI::aStar_Fast() {
 			}
 		}
 
+		outputNodeData();
 		currNode = smallest;
 	}
+}
+
+		(*visitedNodes).insert(pair<int, GraphNode*>(currNode->getID(), currNode));
+		(*unvisitedNodes)[currNode->getID()] = NULL; //remove the currNode from unvisited nodes
+		outputNodeData();
+
+}
+
+void UI::aStar_Fast() {
+	// set short and total for starting node
+
+	currNode = (*unvisitedNodes)[a];
+	currNode->setShort(0);
+	currNode->setTotal(currNode->getHeur());
+	currNode->setCurrent(true);
+
+	while (currNode->getID() != z) { //while the currNode is not the final node
+
+
+		std::vector<GraphConnection*> currConns = currNode->getConnections();
+
+		//update shortest distance from a, and total distance for all connections
+		for (int i = 0; i < currConns.size(); i++) { //for all connections
+			if ((*unvisitedNodes)[currConns[i]->getEnd()->getID()] != NULL) { //if the end node is not visited
+
+				int connNodeID = currConns[i]->getEnd()->getID(); //the end node of the current connection
+
+				float delay = currConns[i]->getDelay();			  //get the propagation delay of current connection
+
+				float testTotal = currNode->getShort() + delay + currConns[i]->getEnd()->getHeur();
+
+				//set shortest distance from start to be connection delay + currNode's shortest distance from starting node
+				(*unvisitedNodes)[connNodeID]->setShort(delay + currNode->getShort());
+
+
+				if (testTotal < (*unvisitedNodes)[connNodeID]->getTotal()) {
+					//set total distance from start to be connection delay + heuristic distance 
+					(*unvisitedNodes)[connNodeID]->setTotal(testTotal);
+				}
+				//set previous node to be currNode
+				(*unvisitedNodes)[connNodeID]->setPrev(currNode);
+			}
+
+		}
+
+		(*visitedNodes).insert(pair<int, GraphNode*>(currNode->getID(), currNode));
+		(*unvisitedNodes)[currNode->getID()] = NULL; //remove the currNode from unvisited nodes
+
+
+		//find node in unvisited with smallest 
+		GraphNode* smallest = NULL;
+		map<int, GraphNode*>::iterator itr;
+		for (itr = (*unvisitedNodes).begin(); itr != (*unvisitedNodes).end(); ++itr) {
+			if (itr->second != NULL) { //if the end node is not visited
+				if (smallest == NULL || itr->second->getTotal() < smallest->getTotal()) {
+					smallest = itr->second;
+				}
+			}
+		}
+		outputGraph();
+		outputNodeData();
+		currNode = smallest;
+	}
+
+	(*visitedNodes).insert(pair<int, GraphNode*>(currNode->getID(), currNode));
+	(*unvisitedNodes)[currNode->getID()] = NULL; //remove the currNode from unvisited nodes
+	outputGraph();
+	outputNodeData();
 }

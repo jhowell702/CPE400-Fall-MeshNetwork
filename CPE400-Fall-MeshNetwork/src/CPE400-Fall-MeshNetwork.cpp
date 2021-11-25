@@ -14,7 +14,7 @@
 
 using namespace std;
 
-	enum nodesNames { a, b, c, d, e, f, z };
+enum nodesNames { a, b, c, d, e, f, g, h, i, j, k, z };
 
 void astar(Graph* graph) {
 
@@ -94,13 +94,15 @@ int main()
 
 	}
 
-
-
-	UI* ui = new UI(unvisitedNodes, visitedNodes);
+	UI* ui = new UI(unvisitedNodes, visitedNodes, test);
 
 	ui->aStar_Fast();
 
-	ui->outputGraph(test);
+	cout << "------------------------------------------------------------------------------" << endl;
+	cout << "| Final Path: ";
+	ui->outputFinal(test->getNodes()[z]);
+	cout << endl << "------------------------------------------------------------------------------" << endl;
+
 
 
 	return 0;

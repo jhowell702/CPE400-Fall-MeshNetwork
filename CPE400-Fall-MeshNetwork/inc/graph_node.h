@@ -15,13 +15,18 @@ public:
 	void setShort(float in) { shortDis = in; };
 	void setHeur(float in) { heur = in; };
 	void setTotal(float in) { totalDis = in; };
+	void setCurrent(bool in) { isCurrent = in; };
 
 	void setPrev(GraphNode* in) { prevNode = in; };
+
 
 	int getID() { return id; };
 	float getShort() { return shortDis; };
 	float getHeur() { return heur; };
 	float getTotal() { return totalDis; };
+	bool getCurrent() { return isCurrent; };
+
+	GraphNode* getPrev() { return prevNode; };
 
 	void createConnection(GraphNode*, float);
 
@@ -43,6 +48,8 @@ private:
 	float totalDis;
 
 	GraphNode* prevNode;
+
+	bool isCurrent;
 
 	std::vector<GraphConnection*> connections;
 };

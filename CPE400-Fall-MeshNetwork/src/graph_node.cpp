@@ -9,6 +9,9 @@ using namespace std;
 GraphNode::GraphNode() {
 
 
+	id = 0;
+	prevNode = NULL;
+
 	procDelay = rand() % 100;
 	procDelay *= .01;
 
@@ -21,6 +24,8 @@ GraphNode::GraphNode() {
 	totalDis = 1000000;
 
 	heur = 0;
+
+	isCurrent = false;
 
 
 }

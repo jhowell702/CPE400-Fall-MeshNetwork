@@ -9,20 +9,23 @@ class UI {
 
 public:
 
-	UI(map<int, GraphNode*> * in, map<int, GraphNode*>* in2);
+	UI(map<int, GraphNode*> * in, map<int, GraphNode*>* in2, Graph* graph);
 
 	void aStar_Slow();
 	void aStar_Fast();
 
-	void outputNodes();
-	void outputGraph(Graph* graph);
-	void outputNode(Graph* graph, int);
-	void UI::outputConnection(Graph* graph, int, int);
+	void outputNodeData();
+	void outputGraph();
+	void outputNode(int);
+	void outputFinal(GraphNode* prev);
+	void UI::outputConnection(int, int);
 
 private:
 
 	GraphNode* currNode;
 	map<int, GraphNode*> * unvisitedNodes;
 	map<int, GraphNode*> * visitedNodes;
+
+	Graph* graph;
 
 };
