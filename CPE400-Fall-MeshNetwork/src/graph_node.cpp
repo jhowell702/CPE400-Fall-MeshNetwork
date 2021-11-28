@@ -12,12 +12,12 @@ GraphNode::GraphNode() {
 	id = 0;
 	prevNode = NULL;
 
-	procDelay = rand() % 100;
-	procDelay *= .01;
+	m_processingDelay = rand() % 100;
+	m_processingDelay *= .01;
 
 
-	transDelay = rand() % 100;
-	qSize = rand() % 100;
+	m_transmissionDelay = rand() % 100;
+	m_remainingBufferSize = rand() % 100;
 
 	// a* data values for the node
 	shortDis = 1000000;
@@ -32,7 +32,7 @@ GraphNode::GraphNode() {
 
 void GraphNode::outPutNodalDelays() {
 
-	cout << procDelay << endl;
+	cout << m_processingDelay << endl;
 
 
 }

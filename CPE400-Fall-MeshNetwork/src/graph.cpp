@@ -21,7 +21,7 @@ void Graph::defaultInit() {
 
 	enum nodesNames { a, b, c, d, e, f, g, h, i, j, k, z };
 
-	nodes[a]->setHeur(5);
+	nodes[a]->setHeur(1);
 	nodes[a]->createConnection(nodes[b], 6);
 	nodes[a]->createConnection(nodes[c], 3);
 	nodes[a]->createConnection(nodes[d], 4);

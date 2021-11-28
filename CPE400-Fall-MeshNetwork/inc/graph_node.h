@@ -19,7 +19,6 @@ public:
 
 	void setPrev(GraphNode* in) { prevNode = in; };
 
-
 	int getID() { return id; };
 	float getShort() { return shortDis; };
 	float getHeur() { return heur; };
@@ -38,9 +37,9 @@ private:
 
 	int id;
 
-	float procDelay;
-	float transDelay;
-	float qSize;
+	float m_processingDelay;
+	float m_transmissionDelay;
+	float m_remainingBufferSize;
 
 	// a* data values for the node
 	float shortDis;

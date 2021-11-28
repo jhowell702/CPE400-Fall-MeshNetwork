@@ -96,7 +96,7 @@ int main()
 
 	UI* ui = new UI(unvisitedNodes, visitedNodes, test);
 
-	ui->aStar_Fast();
+	ui->aStar_Slow();
 
 	cout << "------------------------------------------------------------------------------" << endl;
 	cout << "| Final Path: ";

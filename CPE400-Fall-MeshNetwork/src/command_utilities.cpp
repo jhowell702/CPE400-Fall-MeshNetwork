@@ -160,49 +160,84 @@ void UI::aStar_Slow() {
 		}
 
 		if (slowState == 1) {
-		std::vector<GraphConnection*> currConns = currNode->getConnections();
-
-		//update shortest distance from a, and total distance for all connections
-		for (int i = 0; i < currConns.size(); i++) { //for all connections
-			if ((*unvisitedNodes)[currConns[i]->getEnd()->getID()] != NULL) { //if the end node is not visited
-
-				int connNodeID = currConns[i]->getEnd()->getID(); //the end node of the current connection
-
-				float delay = currConns[i]->getDelay();			  //get the propagation delay of current connection
-
-				float testTotal = currNode->getShort() + delay + currConns[i]->getEnd()->getHeur();
-
-				//set shortest distance from start to be connection delay + currNode's shortest distance from starting node
-				(*unvisitedNodes)[connNodeID]->setShort(delay + currNode->getShort());
+			//if the currNode exists
+			if (currNode != NULL) {
 
 
-				if (testTotal < (*unvisitedNodes)[connNodeID]->getTotal()) {
-					//set total distance from start to be connection delay + heuristic distance 
-					(*unvisitedNodes)[connNodeID]->setTotal(testTotal);
+
+				//get all current connections
+				std::vector<GraphConnection*> currConns = currNode->getConnections();
+
+
+				for (int i = 0; i < currConns.size(); i++) { //for all connections
+
+					//if curr connection has a destination node
+					if (currConns[i]->getEnd() != NULL) {
+
+						//get the propagation delay of current connection
+						float delay = currConns[i]->getDelay();
+
+						//calculate shortest distance using this connection to compare
+						float testShort = currNode->getShort() + delay;
+
+						//if the new shortest distance is less than the current shortest distance of destination node
+						if (testShort < currConns[i]->getEnd()->getShort()) {
+							//set shortest distance from start to be connection delay + currNode's shortest distance from starting node
+							currConns[i]->getEnd()->setShort(testShort);
+
+							//sum a total using current shortest path to start node, length of connection, and heuristic
+							currConns[i]->getEnd()->setTotal(testShort + currConns[i]->getEnd()->getHeur());
+
+							//set previous node to be currNode
+							currConns[i]->getEnd()->setPrev(currNode);
+
+							if ((*unvisitedNodes)[currConns[i]->getEnd()->getID()] == NULL) {
+								(*unvisitedNodes)[currConns[i]->getEnd()->getID()] = (*visitedNodes)[currConns[i]->getEnd()->getID()];
+								(*visitedNodes).erase(currConns[i]->getEnd()->getID());
+
+							}
+
+						}
+
+						//if the new shortest distance is greater than, ignore this connection
+						else {
+
+						}
+					}
+
+					//no destination node for current connection, output error
+					else {
+
+					}
+
 				}
-				//set previous node to be currNode
-				(*unvisitedNodes)[connNodeID]->setPrev(currNode);
-			}
-
-		}
-
-		(*visitedNodes).insert(pair<int, GraphNode*>(currNode->getID(), currNode));
-		(*unvisitedNodes)[currNode->getID()] = NULL; //remove the currNode from unvisited nodes
 
 
-		//find node in unvisited with smallest 
-		GraphNode* smallest = NULL;
-		map<int, GraphNode*>::iterator itr;
-		for (itr = (*unvisitedNodes).begin(); itr != (*unvisitedNodes).end(); ++itr) {
-			if (itr->second != NULL) { //if the end node is not visited
-				if (smallest == NULL || itr->second->getTotal() < smallest->getTotal()) {
-					smallest = itr->second;
+
+
+				//find node in unvisited with smallest 
+				GraphNode* smallest = NULL;
+				map<int, GraphNode*>::iterator itr;
+				for (itr = (*unvisitedNodes).begin(); itr != (*unvisitedNodes).end(); ++itr) {
+					if (itr->second != NULL) { //if the end node is not visited
+						if (smallest == NULL || itr->second->getTotal() < smallest->getTotal()) {
+							smallest = itr->second;
+						}
+					}
 				}
-			}
-		}
+				outputGraph();
+				outputNodeData();
 
-		outputNodeData();
-		currNode = smallest;
+				//mark current node as been visited
+				(*visitedNodes).insert(pair<int, GraphNode*>(currNode->getID(), currNode));
+				(*unvisitedNodes)[currNode->getID()] = NULL;
+
+				currNode = smallest;
+			}
+			//if the currNode does not exists
+			else {
+				//output error
+			}
 	}
 }
 
@@ -220,56 +255,86 @@ void UI::aStar_Fast() {
 	currNode->setTotal(currNode->getHeur());
 	currNode->setCurrent(true);
 
-	while (currNode->getID() != z) { //while the currNode is not the final node
+	//while the currNode is not the final node
+	while (currNode->getID() != z) { 
+
+		//if the currNode exists
+		if (currNode != NULL){
 
 
-		std::vector<GraphConnection*> currConns = currNode->getConnections();
 
-		//update shortest distance from a, and total distance for all connections
-		for (int i = 0; i < currConns.size(); i++) { //for all connections
-			if ((*unvisitedNodes)[currConns[i]->getEnd()->getID()] != NULL) { //if the end node is not visited
+			//get all current connections
+			std::vector<GraphConnection*> currConns = currNode->getConnections();
 
-				int connNodeID = currConns[i]->getEnd()->getID(); //the end node of the current connection
+			
+			for (int i = 0; i < currConns.size(); i++) { //for all connections
 
-				float delay = currConns[i]->getDelay();			  //get the propagation delay of current connection
+				//if curr connection has a destination node
+				if (currConns[i]->getEnd() != NULL) {
 
-				float testTotal = currNode->getShort() + delay + currConns[i]->getEnd()->getHeur();
+					//get the propagation delay of current connection
+					float delay = currConns[i]->getDelay();
 
-				//set shortest distance from start to be connection delay + currNode's shortest distance from starting node
-				(*unvisitedNodes)[connNodeID]->setShort(delay + currNode->getShort());
+					//calculate shortest distance using this connection to compare
+					float testShort = currNode->getShort() + delay;
+
+					//if the new shortest distance is less than the current shortest distance of destination node
+					if (testShort < currConns[i]->getEnd()->getShort()) {
+						//set shortest distance from start to be connection delay + currNode's shortest distance from starting node
+						currConns[i]->getEnd()->setShort(testShort);
+
+						//sum a total using current shortest path to start node, length of connection, and heuristic
+						currConns[i]->getEnd()->setTotal(testShort + currConns[i]->getEnd()->getHeur());
+
+						//set previous node to be currNode
+						currConns[i]->getEnd()->setPrev(currNode);
+
+						
+					}
+
+					//if the new shortest distance is greater than, ignore this connection
+					else {
+						//insert node into visited
 
 
-				if (testTotal < (*unvisitedNodes)[connNodeID]->getTotal()) {
-					//set total distance from start to be connection delay + heuristic distance 
-					(*unvisitedNodes)[connNodeID]->setTotal(testTotal);
+					}
 				}
-				//set previous node to be currNode
-				(*unvisitedNodes)[connNodeID]->setPrev(currNode);
+
+				//no destination node for current connection, output error
+				else {
+
+				}
+
 			}
 
-		}
+			//mark current node as been visited
+			(*visitedNodes).insert(pair<int, GraphNode*>(currNode->getID(), currNode));
+			(*unvisitedNodes)[currNode->getID()] = NULL;
 
-		(*visitedNodes).insert(pair<int, GraphNode*>(currNode->getID(), currNode));
-		(*unvisitedNodes)[currNode->getID()] = NULL; //remove the currNode from unvisited nodes
 
-
-		//find node in unvisited with smallest 
-		GraphNode* smallest = NULL;
-		map<int, GraphNode*>::iterator itr;
-		for (itr = (*unvisitedNodes).begin(); itr != (*unvisitedNodes).end(); ++itr) {
-			if (itr->second != NULL) { //if the end node is not visited
-				if (smallest == NULL || itr->second->getTotal() < smallest->getTotal()) {
-					smallest = itr->second;
+			//find node in unvisited with smallest 
+			GraphNode* smallest = NULL;
+			map<int, GraphNode*>::iterator itr;
+			for (itr = (*unvisitedNodes).begin(); itr != (*unvisitedNodes).end(); ++itr) {
+				if (itr->second != NULL) { //if the end node is not visited
+					if (smallest == NULL || itr->second->getTotal() < smallest->getTotal()) {
+						smallest = itr->second;
+					}
 				}
 			}
+			outputGraph();
+			outputNodeData();
+			currNode = smallest;
 		}
-		outputGraph();
-		outputNodeData();
-		currNode = smallest;
+		//if the currNode does not exists
+		else {
+			//output error
+		}
 	}
 
 	(*visitedNodes).insert(pair<int, GraphNode*>(currNode->getID(), currNode));
 	(*unvisitedNodes)[currNode->getID()] = NULL; //remove the currNode from unvisited nodes
 	outputGraph();
 	outputNodeData();
+
 }
