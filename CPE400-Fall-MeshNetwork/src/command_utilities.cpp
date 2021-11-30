@@ -8,11 +8,65 @@ using namespace std;
 
 enum nodesNames { a, b, c, d, e, f, g, h, i, j, k, z };
 
-UI::UI(map<int, GraphNode*> * in, map<int, GraphNode*>* in2, Graph* in3) {
+UI::UI(map<int, GraphNode*> * in, map<int, GraphNode*>* in2, map<int, GraphNode*>* inReset, Graph* in3) {
 
 	visitedNodes = in2;
 	unvisitedNodes = in;
 	graph = in3;
+	reset_unvisitedNodes = inReset;
+
+
+}
+
+
+void UI::menu() {
+
+	bool running = true;
+	int state = -1;
+
+	while (running) {
+		cout << "------------------------------------------------------------------------------" << endl;
+		cout << "|Menu:                                                                       |" << endl;
+		cout << "------------------------------------------------------------------------------" << endl;
+		cout << "|Display current graph:         | 1                                          |" << endl;
+		cout << "|Generate new graph:            | 2                                          |" << endl;
+		cout << "|Step-by-step A*:               | 3                                          |" << endl;
+		cout << "|Find A* path of current graph: | 4                                          |" << endl;
+		cout << "|Exit:                          | 0                                          |" << endl;
+		cout << "------------------------------------------------------------------------------" << endl;
+		cout << "|Enter 0-4 to run command: ";
+		cin >> state;
+
+		switch (state) {
+			case 1:
+				currNode = (*unvisitedNodes)[a];
+				currNode->setShort(0);
+				currNode->setTotal(currNode->getHeur());
+				currNode->setCurrent(true);
+				outputGraph();
+				break;
+
+			case 2:
+
+				break;
+
+			case 3:
+				aStar_Slow();
+				break;
+
+			case 4:
+				aStar_Fast();
+				break;
+
+			case 0:
+				cout << endl << "Exiting program." << endl;
+				return;
+
+			default:
+				cout << endl << "Unrecognized input." << endl;
+				break;
+		}
+	}
 
 }
 
@@ -131,43 +185,49 @@ void UI::outputNodeData() {
 
 }
 
+
 void UI::aStar_Slow() {
+	visitedNodes->clear();
+	(*reset_unvisitedNodes).clear();
+	(*reset_unvisitedNodes) = (*unvisitedNodes);
+
 	currNode = (*unvisitedNodes)[a];
 	currNode->setShort(0);
 	currNode->setTotal(currNode->getHeur());
 	currNode->setCurrent(true);
 
-	int slowState = 1;
+	GraphNode* pastNode = currNode;
 
+	int slowState = 1;
 
 	while (slowState != 0) {
 
 
-		cout << "Input and enter: 1 to continue, 0 to end" << endl << "Input: ";
+		cout << "Input and enter: 1 to continue, 0 to return to main menu" << endl << "Input: ";
 		cin >> slowState;
 
 		if (currNode->getID() == z) {
 			slowState = 0;
 		}
 
-		outputGraph();
+		if (pastNode != currNode) {
+			outputGraph();
 
-		cout << "Input and enter: 1 to continue, 0 to end" << endl << "Input: ";
-		cin >> slowState;
+			cout << "Input and enter: 1 to continue, 0 to return to main menu" << endl << "Input: ";
+			cin >> slowState;
+		}
 
 		if (currNode->getID() == z) {
 			slowState = 0;
 		}
 
 		if (slowState == 1) {
+			pastNode = currNode;
 			//if the currNode exists
 			if (currNode != NULL) {
 
-
-
 				//get all current connections
 				std::vector<GraphConnection*> currConns = currNode->getConnections();
-
 
 				for (int i = 0; i < currConns.size(); i++) { //for all connections
 
@@ -194,9 +254,7 @@ void UI::aStar_Slow() {
 							if ((*unvisitedNodes)[currConns[i]->getEnd()->getID()] == NULL) {
 								(*unvisitedNodes)[currConns[i]->getEnd()->getID()] = (*visitedNodes)[currConns[i]->getEnd()->getID()];
 								(*visitedNodes).erase(currConns[i]->getEnd()->getID());
-
 							}
-
 						}
 
 						//if the new shortest distance is greater than, ignore this connection
@@ -211,9 +269,6 @@ void UI::aStar_Slow() {
 					}
 
 				}
-
-
-
 
 				//find node in unvisited with smallest 
 				GraphNode* smallest = NULL;
@@ -241,13 +296,14 @@ void UI::aStar_Slow() {
 	}
 }
 
-		(*visitedNodes).insert(pair<int, GraphNode*>(currNode->getID(), currNode));
-		(*unvisitedNodes)[currNode->getID()] = NULL; //remove the currNode from unvisited nodes
-		outputNodeData();
+	 (*unvisitedNodes) = (*reset_unvisitedNodes);
 
 }
 
 void UI::aStar_Fast() {
+	visitedNodes->clear();
+	(*reset_unvisitedNodes).clear();
+	(*reset_unvisitedNodes) = (*unvisitedNodes);
 	// set short and total for starting node
 
 	currNode = (*unvisitedNodes)[a];
@@ -259,14 +315,11 @@ void UI::aStar_Fast() {
 	while (currNode->getID() != z) { 
 
 		//if the currNode exists
-		if (currNode != NULL){
-
-
+		if (currNode != NULL) {
 
 			//get all current connections
 			std::vector<GraphConnection*> currConns = currNode->getConnections();
 
-			
 			for (int i = 0; i < currConns.size(); i++) { //for all connections
 
 				//if curr connection has a destination node
@@ -289,28 +342,23 @@ void UI::aStar_Fast() {
 						//set previous node to be currNode
 						currConns[i]->getEnd()->setPrev(currNode);
 
-						
+						if ((*unvisitedNodes)[currConns[i]->getEnd()->getID()] == NULL) {
+							(*unvisitedNodes)[currConns[i]->getEnd()->getID()] = (*visitedNodes)[currConns[i]->getEnd()->getID()];
+							(*visitedNodes).erase(currConns[i]->getEnd()->getID());
+						}
 					}
 
 					//if the new shortest distance is greater than, ignore this connection
 					else {
-						//insert node into visited
-
 
 					}
 				}
-
 				//no destination node for current connection, output error
 				else {
 
 				}
 
 			}
-
-			//mark current node as been visited
-			(*visitedNodes).insert(pair<int, GraphNode*>(currNode->getID(), currNode));
-			(*unvisitedNodes)[currNode->getID()] = NULL;
-
 
 			//find node in unvisited with smallest 
 			GraphNode* smallest = NULL;
@@ -322,8 +370,11 @@ void UI::aStar_Fast() {
 					}
 				}
 			}
-			outputGraph();
-			outputNodeData();
+
+			//mark current node as been visited
+			(*visitedNodes).insert(pair<int, GraphNode*>(currNode->getID(), currNode));
+			(*unvisitedNodes)[currNode->getID()] = NULL;
+
 			currNode = smallest;
 		}
 		//if the currNode does not exists
@@ -336,5 +387,10 @@ void UI::aStar_Fast() {
 	(*unvisitedNodes)[currNode->getID()] = NULL; //remove the currNode from unvisited nodes
 	outputGraph();
 	outputNodeData();
+
+	cout << "Final A* Path: "; outputFinal(graph->getNodes()[z]); cout << endl;
+	cout << "------------------------------------------------------------------------------" << endl;
+
+	(*unvisitedNodes) = (*reset_unvisitedNodes);
 
 }

@@ -87,6 +87,7 @@ int main()
 
 	map<int, GraphNode*>* unvisitedNodes = new map<int, GraphNode*>();
 	map<int, GraphNode*>* visitedNodes = new map<int, GraphNode*>();
+	map<int, GraphNode*>* reset = new map<int, GraphNode*>();
 
 	for (int i = 0; i < test->getNumNodes(); i++) {
 
@@ -94,14 +95,9 @@ int main()
 
 	}
 
-	UI* ui = new UI(unvisitedNodes, visitedNodes, test);
+	UI* ui = new UI(unvisitedNodes, visitedNodes, reset, test);
 
-	ui->aStar_Slow();
-
-	cout << "------------------------------------------------------------------------------" << endl;
-	cout << "| Final Path: ";
-	ui->outputFinal(test->getNodes()[z]);
-	cout << endl << "------------------------------------------------------------------------------" << endl;
+	ui->menu();
 
 
 
