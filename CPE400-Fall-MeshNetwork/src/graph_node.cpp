@@ -12,18 +12,18 @@ GraphNode::GraphNode() {
 	id = 0;
 	prevNode = NULL;
 
-	m_processingDelay = rand() % 100;
-	m_processingDelay *= .01;
+	m_processingDelay = rand() % 10 + 10;
 
+	m_transmissionDelay = rand() % 40 + 20;
 
-	m_transmissionDelay = rand() % 100;
-	m_remainingBufferSize = rand() % 100;
+	m_remainingBufferSize = rand() % 48 + 12;
+
+	heur = (1000 / m_remainingBufferSize) * (.01 * (m_processingDelay + m_transmissionDelay));
 
 	// a* data values for the node
-	shortDis = 1000000;
-	totalDis = 1000000;
+	shortDis = 300;
+	totalDis = 300;
 
-	heur = 0;
 
 	isCurrent = false;
 
@@ -34,7 +34,6 @@ void GraphNode::outPutNodalDelays() {
 
 	cout << m_processingDelay << endl;
 
-
 }
 
 void GraphNode::createConnection(GraphNode* connectingNode, float propDelay) {
@@ -42,6 +41,13 @@ void GraphNode::createConnection(GraphNode* connectingNode, float propDelay) {
 	GraphConnection* temp = new GraphConnection(this ,connectingNode, propDelay);
 
 	connections.push_back(temp);
+}
+
+void GraphNode::genNewConnections() {
+	std::vector<GraphConnection*>::iterator it;
+	for (it = connections.begin(); it != connections.end(); it++) {
+		(*it)->genNewDelay();
+	}
 }
 
 GraphConnection* GraphNode::findConnection(int num) {
@@ -52,4 +58,10 @@ GraphConnection* GraphNode::findConnection(int num) {
 			return (*it);
 		}
 	}
+}
+
+void GraphNode::calcHeur(int proc, int trans, int buffer) {
+
+	heur = (1000 / buffer) * (.01 * (proc + trans));
+
 }

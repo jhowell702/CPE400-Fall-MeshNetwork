@@ -39,7 +39,7 @@ void UI::menu() {
 
 		switch (state) {
 			case 1:
-				currNode = (*unvisitedNodes)[a];
+				currNode = (*graph).getNodes()[a];
 				currNode->setShort(0);
 				currNode->setTotal(currNode->getHeur());
 				currNode->setCurrent(true);
@@ -210,19 +210,13 @@ void UI::aStar_Slow() {
 			slowState = 0;
 		}
 
-		if (pastNode != currNode) {
-			outputGraph();
-
-			cout << "Input and enter: 1 to continue, 0 to return to main menu" << endl << "Input: ";
-			cin >> slowState;
-		}
 
 		if (currNode->getID() == z) {
 			slowState = 0;
 		}
 
 		if (slowState == 1) {
-			pastNode = currNode;
+			//pastNode = currNode;
 			//if the currNode exists
 			if (currNode != NULL) {
 
@@ -235,10 +229,10 @@ void UI::aStar_Slow() {
 					if (currConns[i]->getEnd() != NULL) {
 
 						//get the propagation delay of current connection
-						float delay = currConns[i]->getDelay();
+						int delay = currConns[i]->getDelay();
 
 						//calculate shortest distance using this connection to compare
-						float testShort = currNode->getShort() + delay;
+						int testShort = currNode->getShort() + delay;
 
 						//if the new shortest distance is less than the current shortest distance of destination node
 						if (testShort < currConns[i]->getEnd()->getShort()) {
@@ -265,7 +259,10 @@ void UI::aStar_Slow() {
 
 					//no destination node for current connection, output error
 					else {
-
+						cout << "------------------------------------------------------------------------------" << endl;
+						cout << "|No destination node for current connection";
+						cout << "------------------------------------------------------------------------------" << endl;
+						return;
 					}
 
 				}
@@ -291,12 +288,21 @@ void UI::aStar_Slow() {
 			}
 			//if the currNode does not exists
 			else {
-				//output error
+				cout << "------------------------------------------------------------------------------" << endl;
+				cout << "|Current node does not exist";
+				cout << "------------------------------------------------------------------------------" << endl;
+				return;
 			}
 	}
 }
 
-	 (*unvisitedNodes) = (*reset_unvisitedNodes);
+	(*visitedNodes).insert(pair<int, GraphNode*>(currNode->getID(), currNode));
+	(*unvisitedNodes)[currNode->getID()] = NULL; //remove the currNode from unvisited nodes
+	outputGraph();
+	outputNodeData();
+
+	cout << "Final A* Path: "; outputFinal(graph->getNodes()[z]); cout << endl;
+	cout << "------------------------------------------------------------------------------" << endl;
 
 }
 
@@ -314,7 +320,6 @@ void UI::aStar_Fast() {
 	//while the currNode is not the final node
 	while (currNode->getID() != z) { 
 
-		//if the currNode exists
 		if (currNode != NULL) {
 
 			//get all current connections
@@ -326,10 +331,10 @@ void UI::aStar_Fast() {
 				if (currConns[i]->getEnd() != NULL) {
 
 					//get the propagation delay of current connection
-					float delay = currConns[i]->getDelay();
+					int delay = currConns[i]->getDelay();
 
 					//calculate shortest distance using this connection to compare
-					float testShort = currNode->getShort() + delay;
+					int testShort = currNode->getShort() + delay;
 
 					//if the new shortest distance is less than the current shortest distance of destination node
 					if (testShort < currConns[i]->getEnd()->getShort()) {
@@ -353,9 +358,13 @@ void UI::aStar_Fast() {
 
 					}
 				}
+
 				//no destination node for current connection, output error
 				else {
-
+					cout << "------------------------------------------------------------------------------" << endl;
+					cout << "|No destination node for current connection";
+					cout << "------------------------------------------------------------------------------" << endl;
+					return;
 				}
 
 			}
@@ -370,6 +379,8 @@ void UI::aStar_Fast() {
 					}
 				}
 			}
+			outputGraph();
+			outputNodeData();
 
 			//mark current node as been visited
 			(*visitedNodes).insert(pair<int, GraphNode*>(currNode->getID(), currNode));
@@ -379,7 +390,10 @@ void UI::aStar_Fast() {
 		}
 		//if the currNode does not exists
 		else {
-			//output error
+			cout << "------------------------------------------------------------------------------" << endl;
+			cout << "|Current node does not exist";
+			cout << "------------------------------------------------------------------------------" << endl;
+			return;
 		}
 	}
 
