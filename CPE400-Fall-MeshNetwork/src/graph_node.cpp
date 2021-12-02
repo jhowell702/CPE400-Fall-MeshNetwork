@@ -65,3 +65,18 @@ void GraphNode::calcHeur(int proc, int trans, int buffer) {
 	heur = (1000 / buffer) * (.01 * (proc + trans));
 
 }
+
+void GraphNode::genNewValues() {
+	m_processingDelay = rand() % 10 + 10;
+
+	m_transmissionDelay = rand() % 40 + 20;
+
+	m_remainingBufferSize = rand() % 48 + 12;
+
+	heur = (1000 / m_remainingBufferSize) * (.01 * (m_processingDelay + m_transmissionDelay));
+
+	std::vector<GraphConnection*>::iterator it;
+	for (it = connections.begin(); it != connections.end(); it++) {
+		(*it)->genNewDelay();
+	}
+}

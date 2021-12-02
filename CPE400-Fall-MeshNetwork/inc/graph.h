@@ -12,6 +12,8 @@ public:
 
 	int getNumNodes() { return numNodes; };
 
+	void generateNewValues();
+
 	std::vector<GraphNode*> getNodes() { return nodes; };
 
 private:

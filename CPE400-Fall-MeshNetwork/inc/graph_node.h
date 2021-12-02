@@ -19,6 +19,11 @@ public:
 
 	void setPrev(GraphNode* in) { prevNode = in; };
 
+	int getProcDelay() { return m_processingDelay; };
+	int getBuffer() { return m_remainingBufferSize; };
+	int getTransDelay() { return m_transmissionDelay; };
+
+
 	int getID() { return id; };
 	int getShort() { return shortDis; };
 	int getHeur() { return heur; };
@@ -36,6 +41,8 @@ public:
 	std::vector<GraphConnection*> getConnections() { return connections; };
 
 	GraphConnection* findConnection(int num);
+
+	void genNewValues();
 
 private:
 

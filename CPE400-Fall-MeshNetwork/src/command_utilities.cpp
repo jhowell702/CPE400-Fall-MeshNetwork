@@ -47,7 +47,13 @@ void UI::menu() {
 				break;
 
 			case 2:
-
+				currNode = (*graph).getNodes()[a];
+				currNode->setShort(0);
+				currNode->setTotal(currNode->getHeur());
+				currNode->setCurrent(true);
+				(*graph).generateNewValues();
+				outputGraph();
+				outputFullData();
 				break;
 
 			case 3:
@@ -83,15 +89,15 @@ void UI::outputGraph() {
 
 	// diagnol connectors
 
-	cout << endl;	cout << "                 /             \\                /             \\";
+	cout << endl;	cout << "                 /             \\                /                  \\";
 
 	cout << endl;
 	cout << "                /";
 	cout << "               "; outputConnection(b, f);
 	cout << "              "; outputConnection(g, i);
-	cout << "               \\";
+	cout << "                  \\";
 
-	cout << endl;	cout << "               /                 \\            /                 \\";
+	cout << endl;	cout << "               /                 \\            /                      \\";
 
 	/// Middle nodes
 
@@ -103,14 +109,14 @@ void UI::outputGraph() {
 	cout << "--"; outputConnection(j, z); cout << "--";	outputNode(z);
 
 	// second set of diagnol connectors
-
-	cout << endl;	cout << "               \\                 /            \\                /";
+	 
+	cout << endl;	cout << "               \\                 /            \\                   /";
 	cout << endl;
 	cout << "                \\";
 	cout << "               "; outputConnection(d, f);
 	cout << "              "; outputConnection(g, k);
-	cout << "              /";
-	cout << endl;	cout << "                 \\             /                \\            /";
+	cout << "               /";
+	cout << endl;	cout << "                 \\             /                \\               /";
 
 	cout << endl;
 	cout << "                  \\--"; outputConnection(a, d); cout << "--";	outputNode(d);
@@ -185,6 +191,17 @@ void UI::outputNodeData() {
 
 }
 
+void UI::outputFullData() {
+
+	cout << "------------------------------------------------------------------------------" << endl;
+	cout << "|Full Data                                                                    |" << endl;
+	cout << "------------------------------------------------------------------------------" << endl;
+
+	for (auto& i : (*graph).getNodes()) {
+		cout << "|" << (*i).getID() + 65 << " |Processing Delay: " << (*i).getProcDelay() << " |Transmission Delay: " << (*i).getTransDelay() << " |Heuristic: " << (*i).getHeur() << "|" << endl;
+	}
+
+}
 
 void UI::aStar_Slow() {
 	visitedNodes->clear();

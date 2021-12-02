@@ -19,6 +19,7 @@ public:
 	void outputNodeData();
 	void outputGraph();
 	void outputNode(int);
+	void outputFullData();
 	void outputFinal(GraphNode* prev);
 	void UI::outputConnection(int, int);
 
