@@ -35,7 +35,7 @@ void UI::menu() {
 		cout << "|Find A* path of current graph: | 5                                          |" << endl;
 		cout << "|Exit:                          | 0                                          |" << endl;
 		cout << "------------------------------------------------------------------------------" << endl;
-		cout << "|Enter 0-4 to run command: ";
+		cout << "|Enter 0-5 to run command: ";
 		cin >> state;
 
 		switch (state) {
