@@ -30,8 +30,9 @@ void UI::menu() {
 		cout << "------------------------------------------------------------------------------" << endl;
 		cout << "|Display current graph:         | 1                                          |" << endl;
 		cout << "|Generate new graph:            | 2                                          |" << endl;
-		cout << "|Step-by-step A*:               | 3                                          |" << endl;
-		cout << "|Find A* path of current graph: | 4                                          |" << endl;
+		cout << "|Display full data for nodes:   | 3                                          |" << endl;
+		cout << "|Step-by-step A*:               | 4                                          |" << endl;
+		cout << "|Find A* path of current graph: | 5                                          |" << endl;
 		cout << "|Exit:                          | 0                                          |" << endl;
 		cout << "------------------------------------------------------------------------------" << endl;
 		cout << "|Enter 0-4 to run command: ";
@@ -57,10 +58,14 @@ void UI::menu() {
 				break;
 
 			case 3:
-				aStar_Slow();
+				outputFullData();
 				break;
 
 			case 4:
+				aStar_Slow();
+				break;
+
+			case 5:
 				aStar_Fast();
 				break;
 
@@ -198,7 +203,8 @@ void UI::outputFullData() {
 	cout << "------------------------------------------------------------------------------" << endl;
 
 	for (auto& i : (*graph).getNodes()) {
-		cout << "|" << (*i).getID() + 65 << " |Processing Delay: " << (*i).getProcDelay() << " |Transmission Delay: " << (*i).getTransDelay() << " |Heuristic: " << (*i).getHeur() << "|" << endl;
+		cout << "|" << (char)((*i).getID() + 65) << " |Processing Delay: " << (*i).getProcDelay() << " |Transmission Delay: " << (*i).getTransDelay() 
+						<< "|Buffer Size: " << (*i).getBuffer() << " |Heuristic: " << (*i).getHeur() << "|" << endl;
 	}
 
 }
@@ -228,9 +234,6 @@ void UI::aStar_Slow() {
 		}
 
 
-		if (currNode->getID() == z) {
-			slowState = 0;
-		}
 
 		if (slowState == 1) {
 			//pastNode = currNode;
@@ -246,7 +249,7 @@ void UI::aStar_Slow() {
 					if (currConns[i]->getEnd() != NULL) {
 
 						//get the propagation delay of current connection
-						int delay = currConns[i]->getDelay();
+						int delay = currConns[i]->getDelay() + (.25 + currConns[i]->getEnd()->getHeur());
 
 						//calculate shortest distance using this connection to compare
 						int testShort = currNode->getShort() + delay;
@@ -312,15 +315,19 @@ void UI::aStar_Slow() {
 			}
 	}
 }
+	if(slowState != 0){
+		(*visitedNodes).insert(pair<int, GraphNode*>(currNode->getID(), currNode));
+		(*unvisitedNodes)[currNode->getID()] = NULL; //remove the currNode from unvisited nodes
+		outputGraph();
+		outputNodeData();
 
-	(*visitedNodes).insert(pair<int, GraphNode*>(currNode->getID(), currNode));
-	(*unvisitedNodes)[currNode->getID()] = NULL; //remove the currNode from unvisited nodes
-	outputGraph();
-	outputNodeData();
-
-	cout << "Final A* Path: "; outputFinal(graph->getNodes()[z]); cout << endl;
-	cout << "------------------------------------------------------------------------------" << endl;
-
+		cout << "Final A* Path: "; outputFinal(graph->getNodes()[z]); cout << endl;
+		cout << "------------------------------------------------------------------------------" << endl;
+	}
+	else {
+		(*unvisitedNodes) = (*reset_unvisitedNodes);
+		return;
+	}
 }
 
 void UI::aStar_Fast() {
@@ -348,13 +355,13 @@ void UI::aStar_Fast() {
 				if (currConns[i]->getEnd() != NULL) {
 
 					//get the propagation delay of current connection
-					int delay = currConns[i]->getDelay();
+					int delay = currConns[i]->getDelay() + (.25 + currConns[i]->getEnd()->getHeur());
 
 					//calculate shortest distance using this connection to compare
 					int testShort = currNode->getShort() + delay;
 
 					//if the new shortest distance is less than the current shortest distance of destination node
-					if (testShort < currConns[i]->getEnd()->getShort()) {
+					if (testShort <= currConns[i]->getEnd()->getShort()) {
 						//set shortest distance from start to be connection delay + currNode's shortest distance from starting node
 						currConns[i]->getEnd()->setShort(testShort);
 
@@ -372,7 +379,8 @@ void UI::aStar_Fast() {
 
 					//if the new shortest distance is greater than, ignore this connection
 					else {
-
+						cout << "Current: " << (char)(currNode->getID() + 65) << " End connection: " << (char)(currConns[i]->getEnd()->getID() + 65) << endl;
+						cout << "Test Short: " << testShort << " Short: " << currConns[i]->getEnd()->getShort()  << endl;;
 					}
 				}
 

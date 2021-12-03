@@ -30,7 +30,7 @@ public:
 	int getTotal() { return totalDis; };
 	bool getCurrent() { return isCurrent; };
 
-	void calcHeur(int, int, int);
+	void calcHeurAndSet(int, int, int);
 
 	GraphNode* getPrev() { return prevNode; };
 

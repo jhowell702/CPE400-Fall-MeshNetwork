@@ -11,6 +11,6 @@ GraphConnection::GraphConnection(GraphNode* begin, GraphNode* end, float in_prop
 
 void GraphConnection::genNewDelay() {
 
-	propDelay = rand() % 70 + 20;
+	propDelay = rand() % 80 + 20;
 
 }
