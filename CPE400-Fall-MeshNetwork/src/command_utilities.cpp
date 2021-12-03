@@ -249,7 +249,7 @@ void UI::aStar_Slow() {
 					if (currConns[i]->getEnd() != NULL) {
 
 						//get the propagation delay of current connection
-						int delay = currConns[i]->getDelay() + (.25 * currConns[i]->getEnd()->getHeur());
+						int delay = currConns[i]->getDelay() + (1.1 * currConns[i]->getEnd()->getHeur());
 
 						//calculate shortest distance using this connection to compare
 						int testShort = currNode->getShort() + delay;
