@@ -7,7 +7,6 @@ class Graph {
 public:
 	Graph();
 
-	void outputDelays();
 	void defaultInit();
 
 	int getNumNodes() { return numNodes; };

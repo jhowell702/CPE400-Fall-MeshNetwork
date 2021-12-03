@@ -3,8 +3,11 @@
 
 Graph::Graph() {
 	
+
+	//default initialization for 12 node graph
 	numNodes = 12;
 
+	//create 12 nodes and pushback onto node list
 	for (int x = 0; x < numNodes; x++) {
 
 		GraphNode* temp = new GraphNode();
@@ -13,11 +16,14 @@ Graph::Graph() {
 
 	}
 
+	//default initialization for all nodes
 	defaultInit();
 
 }
 
 void Graph::defaultInit() {
+
+	//default graph intialization using prepicked values
 
 	enum nodesNames { a, b, c, d, e, f, g, h, i, j, k, z };
 
@@ -83,6 +89,8 @@ void Graph::defaultInit() {
 
 void Graph::generateNewValues() {
 
+	//for all nodes, generate new delays, buffer sizes, and connection delays
+
 	enum nodesNames { a, b, c, d, e, f, g, h, i, j, k, z };
 
 	for (auto& i : nodes) {
@@ -93,10 +101,3 @@ void Graph::generateNewValues() {
 
 }
 
-void Graph::outputDelays() {
-
-	for (auto & i : nodes) {
-		i->outPutNodalDelays();
-	}
-
-}

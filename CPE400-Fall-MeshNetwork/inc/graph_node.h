@@ -7,9 +7,6 @@ class GraphNode {
 public:
 	GraphNode();
 
-	void outPutNodalDelays();
-
-
 	void setID(int in) { id = in; };
 
 	void setShort(int in) { shortDis = in; };

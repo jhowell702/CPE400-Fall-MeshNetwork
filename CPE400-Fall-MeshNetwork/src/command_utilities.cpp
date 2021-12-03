@@ -10,6 +10,7 @@ enum nodesNames { a, b, c, d, e, f, g, h, i, j, k, z };
 
 UI::UI(map<int, GraphNode*> * in, map<int, GraphNode*>* in2, map<int, GraphNode*>* inReset, Graph* in3) {
 
+	//default initialization of all maps that will be used, and the incoming default graph
 	visitedNodes = in2;
 	unvisitedNodes = in;
 	graph = in3;
@@ -24,6 +25,7 @@ void UI::menu() {
 	bool running = true;
 	int state = -1;
 
+	//command line interface, switch statement to handle user input.
 	while (running) {
 		cout << "------------------------------------------------------------------------------" << endl;
 		cout << "|Menu:                                                                       |" << endl;
@@ -113,7 +115,7 @@ void UI::outputGraph() {
 	cout << "--"; outputConnection(g, j); cout << "--";	outputNode(j);
 	cout << "--"; outputConnection(j, z); cout << "--";	outputNode(z);
 
-	// second set of diagnol connectors
+	// second set of diaganol connectors
 	 
 	cout << endl;	cout << "               \\                 /            \\                   /";
 	cout << endl;
@@ -123,6 +125,7 @@ void UI::outputGraph() {
 	cout << "               /";
 	cout << endl;	cout << "                 \\             /                \\               /";
 
+	// final row of nodes
 	cout << endl;
 	cout << "                  \\--"; outputConnection(a, d); cout << "--";	outputNode(d);
 	cout << "--"; outputConnection(d, h); cout << "--";						outputNode(h);
@@ -133,6 +136,7 @@ void UI::outputGraph() {
 }
 
 void UI::outputNode(int num) {
+	//output nodal ID and heuristic value for graph display
 	if (currNode->getID() == num) {
 		cout << "\033[30;47m";
 	}
@@ -142,10 +146,12 @@ void UI::outputNode(int num) {
 }
 
 void UI::outputConnection(int node, int num) {
+	//output the delay value of passed in node number and connection number
 	cout << graph->getNodes()[node]->findConnection(num)->getDelay();
 }
 
 void UI::outputFinal(GraphNode* prev) {
+	//recursive function from final node's previous node, so that it goes in order from first to final node.
 
 	if (prev->getID() == z) {
 		outputFinal(prev->getPrev());
@@ -165,6 +171,7 @@ void UI::outputNodeData() {
 
 	map<int, GraphNode*>::iterator it;
 
+	//display unvisited nodes and A* data for given node
 	cout << "------------------------------------------------------------------------------" << endl;
 	cout << "Heuristic Node Data" << endl;
 	cout << "------------------------------------------------------------------------------" << endl;
@@ -178,6 +185,7 @@ void UI::outputNodeData() {
 			}
 		}
 	}
+	//display visited nodes and A* data for visited nodes
 	cout << "------------------------------------------------------------------------------" << endl;
 	cout << "Visited Nodes" << endl;
 	cout << "------------------------------------------------------------------------------" << endl;
@@ -198,6 +206,7 @@ void UI::outputNodeData() {
 
 void UI::outputFullData() {
 
+	//display full nodal delay data for each node
 	cout << "------------------------------------------------------------------------------" << endl;
 	cout << "|Full Data                                                                    |" << endl;
 	cout << "------------------------------------------------------------------------------" << endl;
@@ -210,10 +219,12 @@ void UI::outputFullData() {
 }
 
 void UI::aStar_Slow() {
+	//save a map to reset the unvisited map to on function exit.
 	visitedNodes->clear();
 	(*reset_unvisitedNodes).clear();
 	(*reset_unvisitedNodes) = (*unvisitedNodes);
 
+	//set current node to be A and set values to start A*
 	currNode = (*unvisitedNodes)[a];
 	currNode->setShort(0);
 	currNode->setTotal(currNode->getHeur());
@@ -282,6 +293,7 @@ void UI::aStar_Slow() {
 						cout << "------------------------------------------------------------------------------" << endl;
 						cout << "|No destination node for current connection";
 						cout << "------------------------------------------------------------------------------" << endl;
+						(*unvisitedNodes) = (*reset_unvisitedNodes);
 						return;
 					}
 
@@ -311,11 +323,13 @@ void UI::aStar_Slow() {
 				cout << "------------------------------------------------------------------------------" << endl;
 				cout << "|Current node does not exist";
 				cout << "------------------------------------------------------------------------------" << endl;
+				(*unvisitedNodes) = (*reset_unvisitedNodes);
 				return;
 			}
 	}
 }
 	if(slowState != 0){
+		//carry out steps to add L node to visited
 		(*visitedNodes).insert(pair<int, GraphNode*>(currNode->getID(), currNode));
 		(*unvisitedNodes)[currNode->getID()] = NULL; //remove the currNode from unvisited nodes
 		outputGraph();
@@ -323,14 +337,18 @@ void UI::aStar_Slow() {
 
 		cout << "Final A* Path: "; outputFinal(graph->getNodes()[z]); cout << endl;
 		cout << "------------------------------------------------------------------------------" << endl;
+		//reset unvisited nodes for next A* function call
+		(*unvisitedNodes) = (*reset_unvisitedNodes);
 	}
 	else {
+		//reset unvisited nodes for next A* function call
 		(*unvisitedNodes) = (*reset_unvisitedNodes);
 		return;
 	}
 }
 
 void UI::aStar_Fast() {
+	//save a map to reset the unvisited map to on function exit.
 	visitedNodes->clear();
 	(*reset_unvisitedNodes).clear();
 	(*reset_unvisitedNodes) = (*unvisitedNodes);
@@ -388,6 +406,7 @@ void UI::aStar_Fast() {
 					cout << "------------------------------------------------------------------------------" << endl;
 					cout << "|No destination node for current connection " << i << " of node " << currNode->getID();
 					cout << "------------------------------------------------------------------------------" << endl;
+					(*unvisitedNodes) = (*reset_unvisitedNodes);
 					return;
 				}
 
@@ -417,10 +436,12 @@ void UI::aStar_Fast() {
 			cout << "------------------------------------------------------------------------------" << endl;
 			cout << "|Current node does not exist";
 			cout << "------------------------------------------------------------------------------" << endl;
+			(*unvisitedNodes) = (*reset_unvisitedNodes);
 			return;
 		}
 	}
 
+	//carry out steps to add L node to visited
 	(*visitedNodes).insert(pair<int, GraphNode*>(currNode->getID(), currNode));
 	(*unvisitedNodes)[currNode->getID()] = NULL; //remove the currNode from unvisited nodes
 	outputGraph();
@@ -429,6 +450,7 @@ void UI::aStar_Fast() {
 	cout << "Final A* Path: "; outputFinal(graph->getNodes()[z]); cout << endl;
 	cout << "------------------------------------------------------------------------------" << endl;
 
+	//reset unvisited map for next A* function call
 	(*unvisitedNodes) = (*reset_unvisitedNodes);
 
 }
