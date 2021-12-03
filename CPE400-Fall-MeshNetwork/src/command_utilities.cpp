@@ -249,7 +249,7 @@ void UI::aStar_Slow() {
 					if (currConns[i]->getEnd() != NULL) {
 
 						//get the propagation delay of current connection
-						int delay = currConns[i]->getDelay() + (.25 + currConns[i]->getEnd()->getHeur());
+						int delay = currConns[i]->getDelay() + (.25 * currConns[i]->getEnd()->getHeur());
 
 						//calculate shortest distance using this connection to compare
 						int testShort = currNode->getShort() + delay;
@@ -355,7 +355,7 @@ void UI::aStar_Fast() {
 				if (currConns[i]->getEnd() != NULL) {
 
 					//get the propagation delay of current connection
-					int delay = currConns[i]->getDelay() + (.25 + currConns[i]->getEnd()->getHeur());
+					int delay = currConns[i]->getDelay() + (1.1 * currConns[i]->getEnd()->getHeur());
 
 					//calculate shortest distance using this connection to compare
 					int testShort = currNode->getShort() + delay;
@@ -379,15 +379,14 @@ void UI::aStar_Fast() {
 
 					//if the new shortest distance is greater than, ignore this connection
 					else {
-						cout << "Current: " << (char)(currNode->getID() + 65) << " End connection: " << (char)(currConns[i]->getEnd()->getID() + 65) << endl;
-						cout << "Test Short: " << testShort << " Short: " << currConns[i]->getEnd()->getShort()  << endl;;
+						
 					}
 				}
 
 				//no destination node for current connection, output error
 				else {
 					cout << "------------------------------------------------------------------------------" << endl;
-					cout << "|No destination node for current connection";
+					cout << "|No destination node for current connection " << i << " of node " << currNode->getID();
 					cout << "------------------------------------------------------------------------------" << endl;
 					return;
 				}
