@@ -8,3 +8,4 @@ add_executable (CPE400-Fall-MeshNetwork "src/CPE400-Fall-MeshNetwork.cpp" "inc/C
 
 # TODO: Add tests and install targets if needed.
 include_directories(inc)
+set (CMAKE_CXX_STANDARD 11)

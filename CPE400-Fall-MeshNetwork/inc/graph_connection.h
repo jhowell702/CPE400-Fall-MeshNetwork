@@ -1,3 +1,5 @@
+#include <cstdlib>
+
 class GraphNode;
 
 class GraphConnection {
