@@ -1,4 +1,13 @@
-# CPE400-Fall-MeshNetwork
+# CPE400-Fall-MeshNetwork-(1)
+
+# Group Members
+
+```
+Justin Howell
+Elizabeth Kish
+Matin Martin Perez Navarro
+
+```
 
 ## Compilation Instructions
 If cmake is installed on the system, in the /CPE400-Fall-MeshNetwork/linux_build folder, run the command:
