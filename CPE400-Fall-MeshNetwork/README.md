@@ -1,4 +1,13 @@
-# CPE400-Fall-MeshNetwork
+# CPE400-Fall-MeshNetwork-(1)
+
+# Group Members
+
+```
+Justin Howell
+Elizabeth Kish
+Martin Perez Navarro
+
+```
 
 ## Compilation Instructions
 If cmake is installed on the system, in the /CPE400-Fall-MeshNetwork/linux_build folder, run the command:
@@ -7,14 +16,14 @@ If cmake is installed on the system, in the /CPE400-Fall-MeshNetwork/linux_build
 cmake ..
 ```
 
-If cmake is not installed on the system, a pregenerated Makefile is included. Simply run the terminal command in the linux_build folder:
+Following running cmake, run the Makefile using the command:
 
 ```bash
 make
 ```
 
 ## Run Instructions
-After the code successfully compiles, run the command in the same directory as compilation the command:
+After the code successfully compiles, in the same director linux_build, run the command to run the code:
 
 ```bash
 ./CPE400-Fall-MeshNetwork
