@@ -5,7 +5,7 @@
 ```
 Justin Howell
 Elizabeth Kish
-Matin Martin Perez Navarro
+Martin Perez Navarro
 
 ```
 
